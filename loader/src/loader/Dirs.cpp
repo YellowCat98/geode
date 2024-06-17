@@ -129,16 +129,6 @@ std::filesystem::path dirs::alias(const char* path) {
         }
         std::filesystem::path finalPath(str);
         return finalPath;
-    } else if (str.find("mod:res://") != std::string::npos) {
-        Mod* mod = getMod();
-        str.replace(str.find("mod:res://"), std::string("mod:res://").length(), mod->getResourcesDir().string());
-        size_t pos = 0;
-        while ((pos = str.find("\\", pos)) != std::string::npos) {
-            str.replace(pos, std::string("\\").length(), "/");
-            pos += std::string("/").length();
-        }
-        std::filesystem::path finalPath(str);
-        return finalPath;
     } else {
         throw std::invalid_argument("Invalid alias: " + std::string(str));
     }
