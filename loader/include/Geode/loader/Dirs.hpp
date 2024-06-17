@@ -59,5 +59,5 @@ namespace geode::dirs {
     /**
      * Use aliases to get paths
      */
-    GEODE_DLL std::filesystem::path alias(const char* str);
+    GEODE_DLL std::filesystem::path alias(const char* path);
 }
