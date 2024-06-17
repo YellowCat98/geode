@@ -46,3 +46,28 @@ std::filesystem::path dirs::getIndexDir() {
 std::filesystem::path dirs::getCrashlogsDir() {
     return crashlog::getCrashLogDirectory();
 }
+std::filesystem::path dirs::alias(const char* str) {
+    if (str == "game://") {
+        return dirs::getGameDir();
+    } else if (str == "mods://") {
+        return getGeodeDir() / "mods";
+    } else if (str == "mods:save://") {
+        return getGeodeSaveDir() / "mods";
+    } else if (str == "geode://") {
+        return dirs::getGameDir() / "geode";
+    } else if (str == "geode:save://") {
+        return dirs::getSaveDir() / "geode";
+    } else if (str == "geode:res://") {
+        return dirs::getGeodeDir() / "resources";
+    } else if (str == "geode:log://") {
+        return dirs::getGeodeDir() / "logs";
+    } else if (str == "geode:temp://") {
+        return getGeodeDir() / "temp";
+    } else if (str == "mods:config://") {
+        return dirs::getGeodeDir() / "config";
+    } else if (str == "index://") {
+        return dirs::getGeodeDir() / "index";
+    } else {
+        throw std::invalid_argument("Invalid alias: " + std::string(str));
+    }
+}
