@@ -56,4 +56,8 @@ namespace geode::dirs {
      * Directory where crashlogs are stored
      */
     GEODE_DLL std::filesystem::path getCrashlogsDir();
+    /**
+     * Use aliases to get paths
+     */
+    GEODE_DLL std::filesystem::path alias(const char* str);
 }
