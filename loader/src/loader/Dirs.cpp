@@ -46,7 +46,7 @@ std::filesystem::path dirs::getIndexDir() {
 std::filesystem::path dirs::getCrashlogsDir() {
     return crashlog::getCrashLogDirectory();
 }
-std::filesystem::path dirs::alias(const char* str) {
+std::filesystem::path dirs::alias(const std::string& str) {
     if (str == "game://") {
         return dirs::getGameDir();
     } else if (str == "mods://") {
