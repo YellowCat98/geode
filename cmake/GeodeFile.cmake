@@ -43,7 +43,7 @@ set(GEODE_MODS_BEING_BUILT "" CACHE INTERNAL "GEODE_MODS_BEING_BUILT")
 # current workaround is to manually append to GEODE_MODS_BEING_BUILT before 
 # calling setup_geode_mod if the mod depends on external dependencies that 
 # aren't being built
-function(setup_geode_mod proname)
+function(setup_geode_mod proname noobname)
     # Get DONT_INSTALL argument
     set(options DONT_INSTALL)
     set(multiValueArgs EXTERNALS)
@@ -51,6 +51,7 @@ function(setup_geode_mod proname)
 
     # Link Geode to the mod
     target_link_libraries(${proname} geode-sdk)
+    target_link_libraries(${noobname} geode-sdk)
 
     if (ANDROID)
         if (CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -169,7 +170,7 @@ function(setup_geode_mod proname)
         add_custom_target(${proname}_PACKAGE ALL
             DEPENDS ${proname} ${CMAKE_CURRENT_SOURCE_DIR}/mod.json
             COMMAND ${GEODE_CLI} package new ${CMAKE_CURRENT_SOURCE_DIR} 
-                --binary $<TARGET_FILE:${proname}>
+                --binary $<TARGET_FILE:${proname}> $<TARGET_FILE:${noobname}>
                 --output ${CMAKE_CURRENT_BINARY_DIR}/${MOD_ID}.geode
                 ${INSTALL_ARG}
             VERBATIM USES_TERMINAL
