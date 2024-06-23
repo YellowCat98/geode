@@ -283,7 +283,7 @@ void ModDownloadManager::startUpdateAll() {
                                 mod.id
                             );
                         } else {
-                            this->startDownload(mod.id, std::nullopt);
+                            this->startDownload(mod.id, mod.version);
                         }
                     }
                 }
@@ -306,7 +306,7 @@ bool ModDownloadManager::checkAutoConfirm() {
             for (auto inc : confirm->version.metadata.getIncompatibilities()) {
                 // If some mod has an incompatability that is installed,
                 // we need to ask for confirmation
-                if (inc.mod) {
+                if (inc.mod && (!download.getVersion().has_value() || inc.version.compare(download.getVersion().value()))) {
                     return false;
                 }
             }
@@ -314,7 +314,7 @@ bool ModDownloadManager::checkAutoConfirm() {
             // we need to ask for confirmation
             for (auto mod : Loader::get()->getAllMods()) {
                 for (auto inc : mod->getMetadata().getIncompatibilities()) {
-                    if (inc.id == download.getID()) {
+                    if (inc.id == download.getID() && (!download.getVersion().has_value() || inc.version.compare(download.getVersion().value()))) {
                         return false;
                     }
                 }

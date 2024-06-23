@@ -31,7 +31,7 @@ bool SwelvyBG::init() {
         if (sign(gen) == 0) {
             speed = -speed;
         }
-        ccTexParams params = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT};
+        ccTexParams params = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_CLAMP_TO_EDGE};
 
         auto sprite = CCSprite::create(layer.second);
         auto rect = sprite->getTextureRect();
@@ -74,10 +74,10 @@ void SwelvyBG::updateSpritePosition(float dt) {
 
 SwelvyBG* SwelvyBG::create() {
     auto ret = new SwelvyBG();
-    if (ret && ret->init()) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     }
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 }

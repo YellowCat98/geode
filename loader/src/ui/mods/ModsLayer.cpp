@@ -287,11 +287,11 @@ void ModsStatusNode::onRestart(CCObject*) {
 
 ModsStatusNode* ModsStatusNode::create() {
     auto ret = new ModsStatusNode();
-    if (ret && ret->init()) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     }
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 }
 
@@ -395,23 +395,25 @@ bool ModsLayer::init() {
     auto tabsTop = CCSprite::createWithSpriteFrameName(geodeTheme ? "mods-list-top.png"_spr : "mods-list-top-gd.png"_spr);
     tabsTop->setID("frame-top-sprite");
     tabsTop->setAnchorPoint({ .5f, .0f });
+    tabsTop->setZOrder(1);
     m_frame->addChildAtPosition(tabsTop, Anchor::Top, ccp(0, -2));
 
     auto tabsLeft = CCSprite::createWithSpriteFrameName(geodeTheme ? "mods-list-side.png"_spr : "mods-list-side-gd.png"_spr);
     tabsLeft->setID("frame-left-sprite");
     tabsLeft->setScaleY(m_frame->getContentHeight() / tabsLeft->getContentHeight());
-    m_frame->addChildAtPosition(tabsLeft, Anchor::Left, ccp(6, 0));
+    m_frame->addChildAtPosition(tabsLeft, Anchor::Left, ccp(6.5f, 1));
 
     auto tabsRight = CCSprite::createWithSpriteFrameName(geodeTheme ? "mods-list-side.png"_spr : "mods-list-side-gd.png"_spr);
     tabsRight->setID("frame-right-sprite");
     tabsRight->setFlipX(true);
     tabsRight->setScaleY(m_frame->getContentHeight() / tabsRight->getContentHeight());
-    m_frame->addChildAtPosition(tabsRight, Anchor::Right, ccp(-6, 0));
+    m_frame->addChildAtPosition(tabsRight, Anchor::Right, ccp(-6.5f, 1));
 
     auto tabsBottom = CCSprite::createWithSpriteFrameName(geodeTheme ? "mods-list-bottom.png"_spr : "mods-list-bottom-gd.png"_spr);
     tabsBottom->setID("frame-bottom-sprite");
     tabsBottom->setAnchorPoint({ .5f, 1.f });
-    m_frame->addChildAtPosition(tabsBottom, Anchor::Bottom, ccp(0, 2));
+    tabsBottom->setZOrder(1);
+    m_frame->addChildAtPosition(tabsBottom, Anchor::Bottom, ccp(0, 3));
 
     this->addChildAtPosition(m_frame, Anchor::Center, ccp(0, -10), false);
 
@@ -643,6 +645,12 @@ void ModsLayer::onRefreshList(CCObject*) {
     }
 }
 void ModsLayer::onBack(CCObject*) {
+    // Tell every list that we are about to exit the layer.
+    // This prevents any page from being cached when the 
+    // cache invalidation event fires.
+    for (auto& list : m_lists) {
+        list.second->setIsExiting(true);
+    }
     CCDirector::get()->replaceScene(CCTransitionFade::create(.5f, MenuLayer::scene(false)));
 
     // To avoid memory overloading, clear caches after leaving the layer
@@ -696,11 +704,11 @@ void ModsLayer::onSettings(CCObject*) {
 
 ModsLayer* ModsLayer::create() {
     auto ret = new ModsLayer();
-    if (ret && ret->init()) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     }
-    CC_SAFE_DELETE(ret);
+    delete ret;
     return nullptr;
 }
 
